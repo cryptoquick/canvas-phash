@@ -7,6 +7,7 @@ fs = require 'fs'
 read = Promise.promisify fs.readFile
 
 crypto = require 'crypto'
+Buffer = require 'buffer'
 
 newBuffer = (size, encoding)->
     try
@@ -42,7 +43,7 @@ CanvasPhash =
 	readImage: getImageFromPath
 
 	getSHA256: (path)->
-		if typeof path == 'string'
+		if typeof path == 'string' or Buffer.isBuffer path
 			pixelPromise = getImageFromPath path
 		else
 			pixelPromise = Promise.resolve path
@@ -55,11 +56,11 @@ CanvasPhash =
 			hash
 
 	getImageHash: (path)->
-		if typeof path == 'string'
+		if typeof path == 'string' or Buffer.isBuffer path
 			pixelPromise = getImageFromPath path
 		else
 			pixelPromise = Promise.resolve path
-		
+
 		pixelPromise.then (img)->
 			Mean = r:[], g:[], b:[], a:0
 			for blockRow in [0..15]
